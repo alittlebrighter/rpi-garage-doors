@@ -1,0 +1,11 @@
+[Unit]
+Description=Garage Doors Controller
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=
+ExecStopPost=
+
+[Install]
+WantedBy=multi-user.target
