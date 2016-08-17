@@ -1,7 +1,7 @@
 ---
 controllers:
   garage_doors:
-    trigger_time: 70
+    trigger_time: 100
     force_time: 14500
     gpio_pins:
       physical: 
@@ -10,5 +10,8 @@ controllers:
       bcm: 
         - 4
         - 17
-sockets:
-  commands: ":8888"
+endpoints:
+  host: "localhost:8080"
+  paths: 
+    control: "/control"
+    monitor: "/monitor"

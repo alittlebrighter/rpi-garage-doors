@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Garage Doors</title>
+
+    <style>
+        .pull-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button data-door="0" data-force="true" class="trigger control-small">1!</button>
+        <button data-door="0" class="trigger control-large">1</button>
+        <button data-door="1" class="trigger control-large">2</button>
+        <button data-door="1" data-force="true" class="trigger control-small">2!</button>
+    </div>
+    <div id="monitor-options">
+        <table>
+            <tr>
+                <td class="pull-right">Brightness (0 - 255):</td>
+                <td><input type="text" class="monitor-option" data-option="brightness" value="127" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Contrast (0 - 255):</td>
+                <td><input type="text" class="monitor-option" data-option="contrast" value="127" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Saturation (0 - 255):</td>
+                <td><input type="text" class="monitor-option" data-option="saturation" value="127" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Hue (-180 - 180):</td>
+                <td><input type="text" class="monitor-option" data-option="hue" value="0" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Red balance (0 - 127):</td>
+                <td><input type="text" class="monitor-option" data-option="red\ balance" value="40" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Blue balance (0 - 127):</td>
+                <td><input type="text" class="monitor-option" data-option="blue\ balance" value="40" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Gamma (0 - 255):</td>
+                <td><input type="text" class="monitor-option" data-option="gamma" value="127" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Exposure (0 - 6016):</td>
+                <td><input type="text" class="monitor-option" data-option="exposure" value="2000" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Gain (automatic):</td>
+                <td><input type="checkbox" class="monitor-option" data-option="gain,\ automatic" checked /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Gain (0 - 28):</td>
+                <td><input type="text" class="monitor-option" data-option="gain" value="0" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Horizontal flip:</td>
+                <td><input type="checkbox" class="monitor-option" data-option="horizontal\ flip" checked /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Vertical flip:</td>
+                <td><input type="checkbox" class="monitor-option" data-option="vertical\ flip" /></td>
+            </tr>
+            <tr>
+                <td class="pull-right">Compression Quality (50 - 90):</td>
+                <td><input type="text" class="monitor-option" data-option="compression\ quality" value="86" /></td>
+            </tr>
+        </table>
+        <button id="refresh-monitor">Refresh</button>
+    </div> 
+    <br>
+    <div id="monitor"></div>
+    <script type="text/javascript">
+        var triggers = document.querySelectorAll(".trigger");
+        console.log(triggers);
+        for (var i = 0; i < triggers.length; i++) {
+            console.log("adding listener to trigger " + i);
+            var door = triggers[i].getAttribute("data-door")
+                , force = triggers[i].getAttribute("data-force");
+            triggers[i].addEventListener("click", function(e) {
+                var request = new XMLHttpRequest();
+
+                request.onreadystatechange = function () {
+                  if (request.readyState === XMLHttpRequest.DONE) {
+                    if (request.status === 200) {
+                      console.log("request succeeded");
+                    } else {
+                      console.log("request failed");
+                    }
+                  }
+                };
+        
+                request.open("POST", "/garage-doors/control");
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+                var formData = "door=" + door;
+                if (force) {
+                    formData += "&force=" + force;
+                }
+                request.send(formData);
+            }, false);
+        }
+
+        function getMonitorQueryParams() {
+            var options = document.querySelectorAll(".monitor-option")
+                , qparams = "";
+
+            for (var i = 0; i < options.length; i++) {
+                qparams += "o_" + options[i].getAttribute("data-option") + "=";
+
+                if (options[i].getAttribute("type") == "text") {
+                    qparams += options[i].value;
+                } else if (options[i].getAttribute("type") == "checkbox") {
+                    qparams += options[i].checked ? "true" : "false";
+                }
+
+                qparams += "&";
+            }
+
+            return qparams;
+        }
+
+        document.querySelector("#monitor").innerHTML = "<img src=\"/garage-doors/monitor\"></img>";
+
+        document.querySelector("#refresh-monitor").addEventListener("click", function (e) {
+                document.querySelector("#monitor").innerHTML = "<img src=\"/garage-doors/monitor?" +
+                    getMonitorQueryParams() + "\"></img>";            
+            }, false);
+    </script>
+</body>
+</html>

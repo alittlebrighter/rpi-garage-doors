@@ -2,7 +2,7 @@ CC=go
 export GOPATH=${PWD}
 
 debug: 
-	$(CC) run src/server.go config.yaml
+	$(CC) run src/server.go config.yml
 
 build: clean
 	$(CC) build src/server.go

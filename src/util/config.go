@@ -14,8 +14,12 @@ type Config struct {
 			Gpio_pins    struct{ Bcm []int }
 		}
 	}
-	Sockets struct {
-		Commands string
+	Endpoints struct {
+		Host  string
+		Paths struct {
+			Control string
+			Monitor string
+		}
 	}
 }
 

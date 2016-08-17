@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	rpio "github.com/stianeikeland/go-rpio"
@@ -47,7 +47,7 @@ func (controller *GarageDoorController) Trigger(force bool) {
 		time.Sleep(controller.triggerTime * time.Millisecond)
 	}
 	controller.pin.Toggle()
-	fmt.Println("Garage Door trigger complete!")
+	log.Println("Garage Door trigger complete!")
 
 	controller.UnLock()
 }
