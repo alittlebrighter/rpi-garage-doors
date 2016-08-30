@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,23 +10,29 @@ import (
 
 	rpio "github.com/stianeikeland/go-rpio"
 
-	"commands"
-	"util"
+	"github.com/alittlebrighter/rpi-garage-doors/commands"
+	"github.com/alittlebrighter/rpi-garage-doors/util"
 )
 
-const httpPost = "POST"
+const (
+	httpGet  = "GET"
+	httpPost = "POST"
+)
 
 func main() {
 	if err := rpio.Open(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("Error: %v\n", err)
 	}
 	defer rpio.Close()
 
 	controllers := []commands.GarageDoorController{}
 
 	// takes one command line argument specifying the configuration file path
-	conf := util.ParseConfig(os.Args[1])
+	configFile := "config.yml"
+	if len(os.Args) == 2 {
+		configFile = os.Args[1]
+	}
+	conf := util.ParseConfig(configFile)
 
 	for _, door := range conf.Controllers.Garage_doors.Gpio_pins.Bcm {
 		controllers = append(controllers,
@@ -41,34 +46,31 @@ func main() {
 		runtime.GOMAXPROCS(len(controllers))
 	}
 
-	http.HandleFunc("/garage_door_http", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(conf.Endpoints.Paths.Control, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != httpPost {
-			util.HandleWarning(errors.New("HTTP Method " + r.Method + " not valid for this endpoint."))
+			fmt.Fprintf(w, "HTTP Method "+r.Method+" not valid for this endpoint.")
 			return
 		}
 
-		parseFormError := r.ParseForm()
-		if parseFormError != nil {
-			fmt.Fprintf(w, "Error parsing form data.")
-			return
-		}
-
-		door, doorErr := strconv.Atoi(r.Form.Get("door"))
+		door, doorErr := strconv.Atoi(r.PostFormValue("door"))
 		if doorErr != nil || door >= len(controllers) {
 			fmt.Fprintf(w, "Error parsing door number.")
 			return
 		}
 
-		force, forceErr := strconv.ParseBool(r.Form.Get("force"))
+		force, forceErr := strconv.ParseBool(r.PostFormValue("force"))
 		if forceErr != nil {
 			fmt.Fprintf(w, "Error parsing force value.")
 			return
 		}
+
+		log.Println("Opening door " + r.PostFormValue("door") + ", force: " + r.PostFormValue("force"))
 
 		go controllers[door].Trigger(force)
 
 		fmt.Fprintf(w, "door: %d, force: %v", door, force)
 	})
 
-	log.Fatal(http.ListenAndServe(conf.Sockets.Commands, nil))
+	log.Println("Starting server at " + conf.Endpoints.Host)
+	log.Fatal(http.ListenAndServe(conf.Endpoints.Host, nil))
 }

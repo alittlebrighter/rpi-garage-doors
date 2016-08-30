@@ -10,5 +10,7 @@ controllers:
       bcm: 
         - 4
         - 17
-sockets:
-  commands: ":8888"
+endpoints:
+  host: "localhost:8080"
+  paths:
+    control: "/control"

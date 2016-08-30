@@ -1,9 +1,9 @@
 package util
 
 import (
-	yaml "gopkg.in/yaml.v2"
-
 	"io/ioutil"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -14,8 +14,11 @@ type Config struct {
 			Gpio_pins    struct{ Bcm []int }
 		}
 	}
-	Sockets struct {
-		Commands string
+	Endpoints struct {
+		Host  string
+		Paths struct {
+			Control string
+		}
 	}
 }
 

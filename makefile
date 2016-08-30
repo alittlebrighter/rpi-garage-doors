@@ -1,5 +1,4 @@
 CC=go
-export GOPATH=${PWD}
 
 debug: 
 	$(CC) run src/server.go config.yaml
