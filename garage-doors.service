@@ -4,8 +4,8 @@ Description=Garage Doors Controller
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=
-ExecStopPost=
+ExecStart=/bin/garage-doors
+ExecStopPost=/bin/kill -9 ${MAINPID}
 
 [Install]
 WantedBy=multi-user.target

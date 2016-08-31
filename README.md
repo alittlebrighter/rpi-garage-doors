@@ -6,8 +6,8 @@ Edit config.yml according to the pins you are using (BCM) and change the timings
 
 Assuming you have Go and make installed on your Pi start the project clone the project then
 ```
-$ cd rpi-garage-doors
-$ make deps
-$ make build
-$ ./run.sh
+$ go get github.com/alittlebrighter/rpi-garage-doors
+$ sudo make install
+$ sudo garage-doors
 ```
+Then make an http POST request to localhost:8080/control with a body of "door=0&force=false".

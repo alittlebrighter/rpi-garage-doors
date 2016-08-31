@@ -28,7 +28,7 @@ func main() {
 	controllers := []commands.GarageDoorController{}
 
 	// takes one command line argument specifying the configuration file path
-	configFile := "config.yml"
+	configFile := "/etc/garage-doors.conf"
 	if len(os.Args) == 2 {
 		configFile = os.Args[1]
 	}

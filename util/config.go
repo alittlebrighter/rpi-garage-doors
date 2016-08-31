@@ -2,6 +2,7 @@ package util
 
 import (
 	"io/ioutil"
+	"log"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -23,11 +24,15 @@ type Config struct {
 }
 
 func ParseConfig(filepath string) (conf Config) {
-	config_file, err := ioutil.ReadFile(filepath)
-	HandleFatal(err)
+	configFile, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		log.Fatalf("Cannot read config file at %s\n", filepath)
+	}
 
-	_err := yaml.Unmarshal(config_file, &conf)
-	HandleFatal(_err)
+	err = yaml.Unmarshal(configFile, &conf)
+	if err != nil {
+		log.Fatalf("Cannot parse config file at %s\n", filepath)
+	}
 
 	return
 }
