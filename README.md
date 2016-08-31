@@ -7,6 +7,7 @@ Edit config.yml according to the pins you are using (BCM) and change the timings
 Assuming you have Go and make installed on your Pi start the project clone the project then
 ```
 $ go get github.com/alittlebrighter/rpi-garage-doors
+$ cd $GOPATH/src/github.com/alittlebrighter/rpi-garage-doors
 $ sudo make install
 $ sudo garage-doors
 ```
