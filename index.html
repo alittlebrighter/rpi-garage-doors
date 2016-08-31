@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Garage Doors</title>
+
+    <style>
+        .trigger {
+            font-size: xx-large; 
+        }
+
+        .control-small {
+            padding: 20px 20px;
+        }
+
+        .control-large {
+            padding: 20px 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button data-door="0" data-force="true" class="trigger control-small">1!</button>
+        <button data-door="0" class="trigger control-large">1</button>
+        <button data-door="1" class="trigger control-large">2</button>
+        <button data-door="1" data-force="true" class="trigger control-small">2!</button>
+    </div>
+    <script type="text/javascript">
+        var triggers = document.querySelectorAll(".trigger");
+        console.log(triggers);
+        for (var i = 0; i < triggers.length; i++) {
+            console.log("adding listener to trigger " + i);
+            var door = triggers[i].getAttribute("data-door")
+                , force = triggers[i].getAttribute("data-force");
+            triggers[i].addEventListener("click", function(e) {
+                var request = new XMLHttpRequest();
+
+                request.onreadystatechange = function () {
+                  if (request.readyState === XMLHttpRequest.DONE) {
+                    if (request.status === 200) {
+                      console.log("request succeeded");
+                    } else {
+                      console.log("request failed");
+                    }
+                  }
+                };
+        
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                // change this per your configuration
+                request.open("POST", "/garage-doors/control");
+    
+                var formData = "door=" + door;
+                if (force) {
+                    formData += "&force=" + force;
+                }
+                request.send(formData);
+            }, false);
+        }            
+    </script>
+</body>
+</html>
