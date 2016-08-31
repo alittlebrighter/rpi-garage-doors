@@ -4,9 +4,6 @@ controllers:
     trigger_time: 70
     force_time: 14500
     gpio_pins:
-      physical: 
-        - 7
-        - 11
       bcm: 
         - 4
         - 17

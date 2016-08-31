@@ -8,6 +8,7 @@ Assuming you have Go and make installed on your Pi start the project clone the p
 ```
 $ go get github.com/alittlebrighter/rpi-garage-doors
 $ cd $GOPATH/src/github.com/alittlebrighter/rpi-garage-doors
+$ make
 $ sudo make install
 $ sudo garage-doors
 ```
