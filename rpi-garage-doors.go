@@ -61,10 +61,9 @@ func main() {
 		force, forceErr := strconv.ParseBool(r.PostFormValue("force"))
 		if forceErr != nil {
 			force = false
-			return
 		}
 
-		log.Println("Opening door " + r.PostFormValue("door") + ", force: " + r.PostFormValue("force"))
+		log.Println("Opening door " + r.PostFormValue("door") + ", force: " + strconv.FormatBool(force))
 
 		go controllers[door].Trigger(force)
 
