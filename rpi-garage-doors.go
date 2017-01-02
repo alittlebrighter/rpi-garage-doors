@@ -60,7 +60,7 @@ func main() {
 
 		force, forceErr := strconv.ParseBool(r.PostFormValue("force"))
 		if forceErr != nil {
-			fmt.Fprintf(w, "Error parsing force value.")
+			force = false
 			return
 		}
 
